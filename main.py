@@ -1,8 +1,9 @@
 import xlsxwriter
+from survey import year, month, score_day, start_day, work_day
+# from filter import
 
 workbook = xlsxwriter.Workbook('table.xlsx')
 worksheet = workbook.add_worksheet()
-
 merge_format = workbook.add_format({
     'bold': 1,
     'border': 1,
@@ -14,14 +15,10 @@ name = 'чек лист'
 stage = 'Состояние'
 temper_out = 't на улице'
 temper_in = 't внутри'
-year = int(input('Введите год: '))
-month = input('Введите месяц: ')
-score_day = int(input('Количество дней в месяце: '))
-start_day = int(input('Число первого рабочего дня: '))
+
 time_p = 'Время замера: '
 comment = 'Примечания: '
 tavro = 'Подпись: '
-work_day = input('Какой первый рабочий день месяца? (1-понедельник...5-пятница): ')
 
 # Шапка таблицы
 worksheet.merge_range('A1:B3', name.upper(), merge_format)  # слитно 2х2

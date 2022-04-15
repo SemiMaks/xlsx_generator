@@ -1,12 +1,4 @@
-from main import new_d
-
-
-def total():
-    print(new_d)
-    for i in new_d:
-        del new_d[0::6]
-        print(new_d)
-
-
-print(new_d)
-total()
+# from survey import score_day, start_day, work_day
+#
+# def filter(score_day, start_day, work_day):
+#     if score_day == 31 & start_day == 1
