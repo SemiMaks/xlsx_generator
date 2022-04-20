@@ -70,6 +70,8 @@ h = 2  # номер отсчёта строки
 v = 2  # номер отсчёта столбца
 c = start_day - 1  # начало месяца
 i = 0  # счётчик
+end_cell = 0
+t = 0
 
 # Генерируем пустые ячейки таблицы
 if score_day == 30:
@@ -83,6 +85,7 @@ for i in range(3, 27):
     for j in range(2, end_cell):
         worksheet.write(i, j, blanc, merge_format_light)
 
+# Заполняем числа месяца
 while i != t:
     v = 2  # номер строки
     h += 1  # номер столбца
