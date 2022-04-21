@@ -1,6 +1,7 @@
 import xlsxwriter
 
 '''Получение данных от пользователя.'''
+print()
 line = '-' * 50
 print(line)
 print('Для генерации таблицы внесите необходимые данные.')
@@ -12,7 +13,7 @@ start_day = 1
 print('Год:', year, ', месяц:', month, ', выбор части:', score_day)
 print(line)
 
-name_file = month+'-'+str(score_day)+'.xlsx'
+name_file = str(year) + '-' + month.lower() + '-' + str(score_day) + '.xlsx'
 workbook = xlsxwriter.Workbook(name_file)
 worksheet = workbook.add_worksheet()
 
@@ -39,10 +40,12 @@ temper_in = 't внутри'
 time_p = 'время замера: '
 comment = 'примечания: '
 tavro = 'подпись: '
-long_year = ''
-long_month = ''
+long_year = ''  # переменная для определения длины заголовка Год
+long_month = ''  # переменная для определения длины заголовка Месяц
 t = 0  # количество столбцов для генерации пустых ячеек
+k = 0  # конечное число чисел месяца
 
+# Устанавливаем условия для отрисовки таблицы
 if score_day == 1:
     month = month + '-' + '1/2'
     long_year = 'D1:R1'
@@ -133,7 +136,7 @@ elif score_day == 2:
 '''Генерируем пустые ячейки таблицы'''
 print(t)
 t = t + 3  # коррекция числа столбцов
-for i in range(3, 24):
+for i in range(3, 30):
     for j in range(2, t):
         worksheet.write(i, j, blanc, merge_format_light)
 
