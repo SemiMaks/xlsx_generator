@@ -1,16 +1,23 @@
 import xlsxwriter
 
 '''Получение данных от пользователя.'''
+line = '-' * 50
+print(line)
 print('Для генерации таблицы внесите необходимые данные.')
 year = input('Введите год: ')  # текущий год
 month = input('Введите название  месяца: ')  # текущий месяц
-score_day = int(input('Количество дней в месяце: '))  # общее количество дней в мясяце
-start_day = int(input('С какого числа начинаем отсчет?: '))  # с какого числа начинаются рабочие дни
+day_months = int(input('Полное количество дней в месяце:'))
+score_day = int(input('Часть месяца (1 - первая половина, 2 - вторая): '))  # часть месяца
+start_day = 1
+print('Год:', year, ', месяц:', month, ', выбор части:', score_day)
+print(line)
 
-workbook = xlsxwriter.Workbook('table.xlsx')
+name_file = month+'-'+str(score_day)+'.xlsx'
+workbook = xlsxwriter.Workbook(name_file)
 worksheet = workbook.add_worksheet()
 
 '''Формат ячеек'''
+'''для текста заголовков'''
 merge_format = workbook.add_format({
     'bold': 1,
     'border': 1,
@@ -18,29 +25,64 @@ merge_format = workbook.add_format({
     'valign': 'vcenter',
     'fg_color': '#e0ffff'})
 
+'''для отрисовки ячеек'''
 merge_format_light = workbook.add_format({
     'border': 1,
     'fg_color': '#ffffff',
 })
 
 '''Назначение переменных заголовков'''
-name = 'Чек лист'
-stage = 'Состояние'
+name = 'чек лист'
+stage = 'статус'
 temper_out = 't на улице'
 temper_in = 't внутри'
-time_p = 'Время замера: '
-comment = 'Примечания: '
-tavro = 'Подпись: '
+time_p = 'время замера: '
+comment = 'примечания: '
+tavro = 'подпись: '
+long_year = ''
+long_month = ''
+t = 0  # количество столбцов для генерации пустых ячеек
+
+if score_day == 1:
+    month = month + '-' + '1/2'
+    long_year = 'D1:R1'
+    long_month = 'D2:R2'
+    t = 15
+    k = 15
+elif score_day == 2:
+    month = month + '-' + '2/2'
+    if day_months == 31:
+        long_year = 'D1:S1'
+        long_month = 'D2:S2'
+        t = 16
+        k = 31
+    elif day_months == 30:
+        long_year = 'D1:R1'
+        long_month = 'D2:R2'
+        t = 15
+        k = 30
+    elif day_months == 29:
+        long_year = 'D1:Q1'
+        long_month = 'D2:Q2'
+        t = 14
+        k = 29
+    elif day_months == 28:
+        long_year = 'D1:P1'
+        long_month = 'D2:P2'
+        t = 13
+        k = 28
+else:
+    print('Недопустимое число!')
 
 '''Отрисовываем и заполняем шапку таблицы'''
-worksheet.merge_range('A1:B3', name.upper(), merge_format)  # слитно 2х2
-worksheet.merge_range('C1:C3', stage, merge_format)  # слитно 2х2
-worksheet.merge_range('D1:S1', year, merge_format)
-worksheet.merge_range('D2:S2', month.upper(), merge_format)
+worksheet.merge_range('A1:B3', name.upper(), merge_format)
+worksheet.merge_range('C1:C3', stage.upper(), merge_format)
+worksheet.merge_range(long_year, year, merge_format)
+worksheet.merge_range(long_month, month.upper(), merge_format)
 
 '''Отрисовываем и заполняем столбец слева (заголовки)'''
-worksheet.merge_range('A4:B4', temper_out, merge_format)  # слитно 2х2 температура уличная
-worksheet.merge_range('A5:B5', temper_in, merge_format)  # слитно 2х2 температура в помещении
+worksheet.merge_range('A4:B4', temper_out, merge_format)
+worksheet.merge_range('A5:B5', temper_in, merge_format)
 worksheet.merge_range('A6:A9', 'Блок №1', merge_format)
 worksheet.merge_range('A10:A13', 'Блок №2', merge_format)
 worksheet.merge_range('A14:A17', 'Блок №3', merge_format)
@@ -56,10 +98,10 @@ for i in range(4):
         worksheet.write(v, h, opt, merge_format)
         v += 1
 
-'''Отрисовываем и заполняем футер таблицы'''
-worksheet.merge_range('A22:B22', time_p, merge_format)
-worksheet.merge_range('A23:B23', tavro, merge_format)
-worksheet.merge_range('A24:B27', comment, merge_format)
+'''Отрисовываем и заполняем низ таблицы'''
+worksheet.merge_range('A22:B22', time_p.upper(), merge_format)
+worksheet.merge_range('A23:B23', tavro.upper(), merge_format)
+worksheet.merge_range('A24:B24', comment.upper(), merge_format)
 
 '''Генерация пустых ячеек таблицы'''
 row = 3
@@ -71,30 +113,28 @@ v = 2  # номер отсчёта столбца
 c = start_day - 1  # начало месяца
 i = 0  # счётчик
 end_cell = 0
-t = 0
-
-'''Генерируем пустые ячейки таблицы'''
-if score_day == 30:
-    t = 15
-    end_cell = 18
-elif score_day == 31:
-    t = 16
-    end_cell = 19
-
-for i in range(3, 27):
-    for j in range(2, end_cell):
-        worksheet.write(i, j, blanc, merge_format_light)
 
 '''Заполняем числа месяца'''
-while i != t:
-    v = 2  # номер строки
-    h += 1  # номер столбца
-    c += 1  # начало отсчёта дней
-    i += 1
-    worksheet.write(v, h, c, merge_format)
-    if c >= score_day:
-        break
-    elif c >= start_day + 15:
-        break
+if score_day == 1:
+    m = 0
+    for m in range(0, k):
+        v = 2  # номер столбца
+        h += 1  # номер строки
+        m += 1
+        worksheet.write(v, h, m, merge_format)
+elif score_day == 2:
+    m = 0
+    for m in range(15, k):
+        v = 2  # номер столбца
+        h += 1  # номер строки
+        m += 1
+        worksheet.write(v, h, m, merge_format)
+
+'''Генерируем пустые ячейки таблицы'''
+print(t)
+t = t + 3  # коррекция числа столбцов
+for i in range(3, 24):
+    for j in range(2, t):
+        worksheet.write(i, j, blanc, merge_format_light)
 
 workbook.close()
