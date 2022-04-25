@@ -111,7 +111,7 @@ try:
     '''Отрисовываем и заполняем низ таблицы'''
     worksheet.merge_range('A22:B22', time_p.upper(), merge_format)
     worksheet.merge_range('A23:B23', tavro.upper(), merge_format)
-    worksheet.merge_range('A24:B24', comment.upper(), merge_format)
+    worksheet.merge_range('A24:B30', comment.upper(), merge_format)
 
     '''Генерация пустых ячеек таблицы'''
     row = 3
@@ -141,7 +141,7 @@ try:
             worksheet.write(v, h, m, merge_format)
 
     '''Генерируем пустые ячейки таблицы'''
-    print(t)
+    # print(t)
     t = t + 3  # коррекция числа столбцов
     for i in range(3, 30):
         for j in range(2, t):
@@ -150,3 +150,4 @@ except Exception as err:
     print(err)
 
 workbook.close()
+input('Для завершения нажмите Enter')
